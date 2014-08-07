@@ -37,6 +37,16 @@ public class NewNettyClient extends Client {
         return NewNettyClient.singleton;
     }
 
+    @Override
+    public void close() {
+
+        try {
+            this.channel.closeFuture().sync();
+        } catch (InterruptedException e) {
+            throw new BaseException(e);
+        }
+    }
+
     public void connect(String host, int port, String aidLabel, String cmuLabel) {
 
         if(channel != null){
@@ -70,7 +80,6 @@ public class NewNettyClient extends Client {
             this.setAidLabel(aidLabel);
             this.setCmuLabel(cmuLabel);
 
-            this.channel.closeFuture().sync();
 
         } catch (Exception e) {
             throw new BaseException(e);
@@ -102,7 +111,6 @@ public class NewNettyClient extends Client {
     @Override
     public void sendCommand(String command){
 
-        System.out.println(this);
         command += "\n";
 
         ByteBuf encoded = this.channel.alloc().buffer(command.length()).writeBytes(command.getBytes());

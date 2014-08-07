@@ -12,5 +12,6 @@ public class ALOIdleState extends State {
 
     public void handleALR(ALRBean alr){
         context.transferTo(new LinkIdleState());
+        System.out.println("ALOHA");
     }
 }

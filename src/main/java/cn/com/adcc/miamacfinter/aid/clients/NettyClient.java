@@ -124,7 +124,7 @@ public class NettyClient extends ChannelInboundHandlerAdapter implements IContex
     }
 
     public void subscribe(){
-        String command = "add,0," + cmuLabel;
+        String command = "add,0," + aidLabel;
         this.sendCommand(command);
     }
 
@@ -176,6 +176,7 @@ public class NettyClient extends ChannelInboundHandlerAdapter implements IContex
     }
 
     public void receiveFile(){
+        System.out.println(this.fileBean);
         if(this.fileBean != null){
             this.receiveFile(this.fileBean);
         }

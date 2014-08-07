@@ -89,7 +89,7 @@ public class SocketClient implements IContext {
                     BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                     while(true){
-                        ClientUtils.handleInputData(SocketClient.this.state,input.readLine());
+                        ClientUtils.handleInputData(SocketClient.this.state, input.readLine());
                     }
 
                 } catch (IOException e) {
@@ -239,6 +239,7 @@ public class SocketClient implements IContext {
     }
 
     public void receiveFile(){
+        System.out.println(this.fileBean);
         if(this.fileBean != null){
             this.receiveFile(this.fileBean);
         }

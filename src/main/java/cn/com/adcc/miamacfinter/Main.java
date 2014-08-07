@@ -10,7 +10,9 @@ import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        testClient();
+//        testSocket();
+//        testNetty();
+          testClient();
     }
 
     public static void testSocket() throws Exception {
@@ -26,8 +28,8 @@ public class Main {
 
         // 374: cabin
         // 304: cmu
-        //client.connect("192.168.4.253", 8766, "374", "304");
-        client.connect("127.0.0.1", 1234, "374", "304");
+        client.connect("192.168.4.253", 8766, "374", "304");
+//        client.connect("127.0.0.1", 1234, "374", "304");
     }
 
     public static void testNetty(){
@@ -43,8 +45,8 @@ public class Main {
 
         // 374: cabin
         // 304: cmu
-        //client.connect("192.168.4.253", 8766, "374", "304");
-        client.connect("127.0.0.1", 1234, "374", "304");
+        client.connect("192.168.4.253", 8766, "374", "304");
+        //client.connect("127.0.0.1", 1234, "374", "304");
 
     }
 
@@ -61,7 +63,7 @@ public class Main {
 
         // 374: cabin
         // 304: cmu
-        //client.connect("192.168.4.253", 8766, "374", "304");
-        client.connect("127.0.0.1", 1234, "374", "304");
+        client.connect("192.168.4.253", 8766, "374", "304");
+        //client.connect("127.0.0.1", 1234, "374", "304");
     }
 }

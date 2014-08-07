@@ -13,11 +13,15 @@ import java.net.Socket;
  */
 public class NewSocketClient extends Client {
 
+    private transient boolean running;
+
     private Socket socket;
+
+    private Thread readThread;
 
     private static NewSocketClient singleton;
 
-    private NewSocketClient(){
+    protected NewSocketClient(){
         this.setState(new InitialState(this));
     }
 
@@ -31,15 +35,35 @@ public class NewSocketClient extends Client {
     }
 
 
+    @Override
+    public void close() {
+        try {
+            this.socket.close();
+            this.running = false;
+            this.readThread.join(1000);
+
+        } catch (Exception e) {
+            throw new BaseException(e);
+        }
+    }
+
     public void connect(String host, int port, String aidLabel, String cmuLabel) {
+
+        this.doConnect(host, port, aidLabel, cmuLabel);
+
+        this.startRead();
+    }
+
+    public void doConnect(String host, int port, String aidLabel, String cmuLabel){
 
         if(this.socket != null){
             throw new BaseException("已经有连接!!!");
         }
 
-        final Socket socket = new Socket();
+        Socket socket = new Socket();
 
-        try{
+        try {
+
             socket.setKeepAlive(true);
             socket.setTcpNoDelay(true);
             socket.connect(new InetSocketAddress(host, port), 5000);
@@ -55,8 +79,11 @@ public class NewSocketClient extends Client {
         } catch (Exception e){
             throw new BaseException(e);
         }
+    }
 
-        Thread reader = new Thread(new Runnable(){
+    public void startRead(){
+
+        this.readThread = new Thread(new Runnable(){
 
             public void run() {
 
@@ -73,7 +100,7 @@ public class NewSocketClient extends Client {
             }
         });
 
-        reader.start();
+        this.readThread.start();
     }
 
     public void sendCommand(String command) {
@@ -90,5 +117,13 @@ public class NewSocketClient extends Client {
 
         out.write(command);
         out.flush();
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
     }
 }

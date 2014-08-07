@@ -27,9 +27,9 @@ public class WaitSOTState extends State {
                 nak.setFileSeqNum(sot.getFileSeqNum());
                 nak.setStatusCode("00");
 
-                super.context.transmit(nak);
+                //super.context.transmit(nak);
 
-                super.context.transferTo(new LinkIdleState());
+                super.context.transferTo(new WaitEOTState());
             }
         } else {
 

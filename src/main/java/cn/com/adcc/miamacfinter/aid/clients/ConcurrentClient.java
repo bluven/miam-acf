@@ -13,20 +13,22 @@ import java.util.concurrent.ArrayBlockingQueue;
 /**
  * Created by bluven on 14-8-7.
  */
-public class ConcurrentClient extends Client {
+public class ConcurrentClient extends NewSocketClient {
 
-    private Socket socket;
+    private transient boolean running;
 
     private Queue<String> commandQueue;
 
     private Thread sendThread;
 
-    private Thread receiveThread;
-
     private static ConcurrentClient singleton;
 
-     private ConcurrentClient(){
+    protected ConcurrentClient(){
+
+        this.running = true;
+
         this.setState(new InitialState(this));
+
         this.commandQueue = new ArrayBlockingQueue<String>(200);
     }
 
@@ -39,6 +41,24 @@ public class ConcurrentClient extends Client {
         return ConcurrentClient.singleton;
     }
 
+    public void close() {
+
+        try {
+            super.close();
+            this.sendThread.join(1000);
+
+        } catch (Exception e) {
+            throw new BaseException(e);
+        }
+    }
+
+    public void connect(String host, int port, String aidLabel, String cmuLabel) {
+        super.doConnect(host, port, aidLabel, cmuLabel);
+        startRead();
+        startSend();
+    }
+
+    /*
     public void connect(String host, int port, String aidLabel, String cmuLabel) {
 
         if(this.socket != null){
@@ -47,7 +67,7 @@ public class ConcurrentClient extends Client {
 
         try{
 
-            final Socket socket = new Socket();
+            Socket socket = new Socket();
 
             socket.setKeepAlive(true);
             socket.setTcpNoDelay(true);
@@ -64,37 +84,30 @@ public class ConcurrentClient extends Client {
             throw new BaseException(e);
         }
 
-        this.receiveThread = new Thread(new Runnable(){
+        this.startRead();
 
-            public void run() {
+        this.startSend();
+    }
+    */
 
-                try {
-                    BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                    while(true){
-                        ClientUtils.handleInputData(ConcurrentClient.this.getState(), input.readLine());
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        this.receiveThread.start();
+    public void startSend(){
 
         this.sendThread = new Thread(new Runnable() {
 
             public void run() {
 
-                PrintWriter out = null;
+
                 ConcurrentClient client = ConcurrentClient.this;
+
                 try{
-                    out = new PrintWriter(new BufferedWriter(
-                                    new OutputStreamWriter(client.socket.getOutputStream())), true);
+
+                    PrintWriter out = new PrintWriter(
+                                        new BufferedWriter(
+                                            new OutputStreamWriter(
+                                                    client.getSocket().getOutputStream())), true);
 
 
-                    while(true){
+                    while(running){
 
                         String command = client.commandQueue.poll();
 
@@ -102,7 +115,7 @@ public class ConcurrentClient extends Client {
                             try {
                                 Thread.sleep(10);
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                throw new BaseException(e);
                             }
                         } else {
 

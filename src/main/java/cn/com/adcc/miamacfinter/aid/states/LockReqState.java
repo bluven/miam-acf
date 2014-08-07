@@ -12,15 +12,15 @@ public class LockReqState extends State {
 
     public void handleOk(){
 
-        super.context.sendCommand("add,0,270");
+        //super.context.sendCommand("add,0,270");
         super.context.sendALO();
         super.context.transferTo(new ALOIdleState());
 
-        //this.startPingPong();
+        this.startPingPong();
     }
 
     private void startPingPong(){
-
+        System.out.println("test");
         Timer timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {

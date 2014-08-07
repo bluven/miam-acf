@@ -34,6 +34,8 @@ public abstract class Client implements IContext {
 
     private IFileReceivedHandler fileReceivedHandler;
 
+    public abstract void close();
+
     public abstract void connect(String host, int port, String aidLabel, String cmuLabel);
 
     public abstract void sendCommand(String command);
@@ -79,6 +81,7 @@ public abstract class Client implements IContext {
     }
 
     public void receiveFile(){
+        System.out.println("File Received");
         if(this.fileBean != null){
             this.receiveFile(this.fileBean);
         }
