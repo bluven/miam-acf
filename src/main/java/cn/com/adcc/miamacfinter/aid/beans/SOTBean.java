@@ -41,8 +41,8 @@ public class SOTBean implements IBean{
     public String asWord() {
 
         String gfi = Integer.toHexString(this.gfi);
-        String fileSeqNum = Utils.leftPadHex(Integer.toHexString(this.fileSeqNum));
-        String lduSeqNum = Utils.leftPadHex(Integer.toHexString(this.lduNum));
+        String fileSeqNum = Utils.twoHex(Integer.toHexString(this.fileSeqNum));
+        String lduSeqNum = Utils.twoHex(Integer.toHexString(this.lduNum));
 
         StringBuilder word = new StringBuilder(label).append(",").append(this.TYPE)
                                                      .append(gfi).append(fileSeqNum).append(lduSeqNum);

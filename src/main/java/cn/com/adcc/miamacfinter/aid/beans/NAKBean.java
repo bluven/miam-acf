@@ -27,7 +27,7 @@ public class NAKBean implements IBean {
 
     public String asWord() {
 
-        String fileSeqNum = Utils.leftPadHex(Integer.toHexString(this.fileSeqNum));
+        String fileSeqNum = Utils.twoHex(Integer.toHexString(this.fileSeqNum));
 
         StringBuilder word = new StringBuilder(label).append(",").append(this.TYPE).append(fileSeqNum).append(statusCode);
 

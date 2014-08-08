@@ -27,8 +27,8 @@ public class ACKBean implements IBean {
 
     public String asWord() {
 
-        String fileSeqNum = Utils.leftPadHex(Integer.toHexString(this.fileSeqNum));
-        String lduSeqNum = Utils.leftPadHex(Integer.toHexString(this.lduSeqNum));
+        String fileSeqNum = Utils.twoHex(Integer.toHexString(this.fileSeqNum));
+        String lduSeqNum = Utils.twoHex(Integer.toHexString(this.lduSeqNum));
 
         StringBuilder word = new StringBuilder(label).append(",").append(this.TYPE).append(fileSeqNum).append(lduSeqNum);
 

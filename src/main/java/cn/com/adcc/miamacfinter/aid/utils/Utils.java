@@ -1,5 +1,6 @@
 package cn.com.adcc.miamacfinter.aid.utils;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,64 +15,90 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Utils {
 
-    public static char[] rtsArray = new char[10];
 
-    public static Map<Integer, String> rtsMap = new HashMap();
-
-    static {
-
-        rtsMap.put(18, "RTS WORD");
-        rtsMap.put(19, "CTS WORD");
-        rtsMap.put(2, "STX WORD");
-        rtsMap.put(1, "CNTRL WORD");
-        rtsMap.put(3, "ETX WORD");
-        rtsMap.put(4, "EOT WORD");
-        rtsMap.put(11, "PUSH/SCRATCH WORD");
-        rtsMap.put(6, "ACK WORD");
-        rtsMap.put(21, "NAK WORD");
-        rtsMap.put(20, "ACK/NAK WORD");
-        rtsMap.put(22, "SYN WORD");
-        rtsMap.put(5, "ENQ WORD");
+    /**
+     * 将16进制格式转换成二进制格式
+     *
+     * Utils里没有真正的二进制数据，所谓二进制格式也只是由0，1组成的字符串
+     * 比如，1F是16进制格式，其二进制格式是:00011111
+     *
+     * @param hex
+     * @return
+     */
+    public static String hex2bit(String hex){
+        return new BigInteger(hex, 16).toString(2);
     }
 
-    // data,timestamp,0,230,abcd12
-    public static String bitfyLabelAndDate(String label, String data){
-
-        label = oct2bitFormat(label);
-
-        data = hex2bitFormat(data);
-
-        return data + ", " + label;
+    public static String hex2bit(Integer hexNum){
+        return Integer.toBinaryString(hexNum);
     }
 
-    public static String long2Date(String num){
+    /**
+     * 将16进制格式转换成二进制格式
+     *
+     * 根据padding会分隔二进制形式以便阅读
+     *
+     * @param hexNum
+     * @param padding
+     * @return
+     */
+    public static String hex2bit(String hexNum, boolean padding){
 
-        long value = Long.parseLong(num);
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        return format.format(new Date(value));
-    }
-
-    public static String hex2bitFormat(String num){
-
-        return hex2bitFormat(num, true);
-    }
-
-    public static String hex2bitFormat(String num, boolean padding){
-
-        String[] result = hex2bit(num);
+        String binNum = hex2bit(hexNum);
 
         String pad = padding? " ": "";
 
-        return StringUtils.join(result, pad);
+        String[] digits = new String[hexNum.length()];
+
+        for(int i = 0; i < hexNum.length(); i++){
+
+            int start = i * 4;
+            int end = start + 4;
+
+            digits[i] = binNum.substring(start, end);
+        }
+
+        return StringUtils.join(digits, pad);
     }
 
-    public static String oct2bitFormat(String num){
+    /**
+     * 将8进制数转换成2进制格式,
+     *
+     * 8进制数的最高位最大是3，转换后的二进制格式只有8位，如
+     *
+     *  374 -> 11 111 100
+     *
+     *  174 >  1 111 100
+     *
+     *  如果生成的二进制数不满8位必须补零，超过8位则需要截断
+     *
+     *  这里的进制转换不遵循正常的进制替换规则
+     *
+     * @param num
+     *
+     */
+    public static String oct2bit(String num){
 
-        String[] result = oct2bit(num);
+        StringBuilder result = new StringBuilder();
 
-        return StringUtils.join(result, "");
+        char[] nums = num.toCharArray();
+
+        for(int i = 0; i < nums.length; i++){
+
+            int n = Integer.parseInt(new String(new char[]{nums[i]}), 8);
+
+            String bits = Integer.toBinaryString(n);
+
+            if(bits.length() < 3) {
+                bits = mustXchars(bits, 3);
+            }
+
+            result.append(bits);
+        }
+
+        result.deleteCharAt(0);
+
+        return result.toString();
     }
 
     public static Integer bit2oct(String bits){
@@ -102,59 +129,6 @@ public class Utils {
         return num.intValue();
     }
 
-    public static Integer bit2octReversely(String bits){
-
-        return bit2oct(StringUtils.reverse(bits));
-    }
-
-    public static String[] hex2bit(String num){
-
-        String[] result = new String[num.length()];
-
-        char[] nums = num.toCharArray();
-
-        for(int i = 0; i < nums.length; i++){
-            int n = Integer.parseInt(new String(new char[]{nums[i]}), 16);
-
-            String hexNum = Integer.toBinaryString(n);
-
-            if(hexNum.length() < 4) {
-                hexNum = leftPadding(hexNum);
-            }
-
-            result[i] = hexNum;
-        }
-        return result;
-    }
-
-    public static String[] oct2bit(String num){
-
-        String[] result = new String[num.length()];
-
-        char[] nums = num.toCharArray();
-
-        for(int i = 0; i < nums.length; i++){
-            int n = Integer.parseInt(new String(new char[]{nums[i]}), 8);
-
-            String hexNum = Integer.toBinaryString(n);
-
-            if(hexNum.length() < 3) {
-                hexNum = leftPadding(hexNum, 3);
-            }
-
-            result[i] = hexNum;
-        }
-
-        result[0] = result[0].substring(1);
-        return result;
-    }
-
-    public static String leftPadding(String num){
-
-        return leftPadding(num, 4);
-    }
-
-
     public static String leftPadding(String num, int numOfPlaceholder){
 
         int n = Integer.parseInt(num);
@@ -162,77 +136,24 @@ public class Utils {
         return String.format("%0" + numOfPlaceholder + "d", n);
     }
 
-    public static String bit2char(String bits){
-
-        char[] chs = new char[3];
-
-        int length = bits.length() / 8;
-
-        for(int i = 0; i < length; i++){
-
-            int start = i * 8 + 1;
-
-            int end = start + 7;
-
-            StringBuilder buffer = new StringBuilder().append('0');
-
-            if(end < bits.length()) {
-                buffer.append(bits.substring(start, end));
-            } else {
-                buffer.append(bits.substring(start));
-            }
-
-            byte b =  Byte.parseByte(buffer.toString(), 2);
-
-            chs[i] = (char)b;
-
-            if(i == 0 && isRts(chs[i])){
-                return rtsMap.get(Integer.valueOf(chs[i]));
-            }
-        }
-
-        String result = new String(chs);
-        return StringUtils.reverse(result);
-    }
-
-
     public static String bit2hex(String bits){
 
        String[] hexArray = new String[bits.length()/4];
 
        for(int i=0; i < hexArray.length; i++){
-           String num = bits.substring(i*4, (i + 1) * 4 );
+           String num = bits.substring(i * 4, (i + 1) * 4 );
            hexArray[i] = Integer.toHexString(Integer.valueOf(num, 2));
        }
 
        return StringUtils.join(hexArray);
     }
 
-    public static String leftPadHex(String hex) {
-        if (hex.length() == 1){
-            hex="0" + hex;
-        }
-        return  hex;
+    public static String twoHex(String hex) {
+        return hex.length() == 1 ? "0" + hex : hex;
     }
 
-    public static boolean isRts(char ch){
 
-        Integer i = (int)ch;
-
-        return rtsMap.containsKey(i);
-    }
-
-    public static ByteBuf buildCommand(String command){
-
-        command += "\n";
-
-        ByteBuf encoded = Unpooled.buffer(command.length());
-        encoded.writeBytes(command.getBytes());
-
-        return encoded;
-    }
-
-    public static String must6chars(String data, int num) {
+    public static String mustXchars(String data, int num) {
 
         StringBuilder result = new StringBuilder();
 
@@ -243,6 +164,11 @@ public class Utils {
         result.append(data);
 
         return result.toString();
+    }
+
+    public static String must6chars(String data) {
+
+        return mustXchars(data, 6);
     }
 
     public static byte reverseBitsByte(int value) {

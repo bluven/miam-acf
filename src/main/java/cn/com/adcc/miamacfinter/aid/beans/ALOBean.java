@@ -12,13 +12,17 @@ public class ALOBean implements IBean{
 
     private String label = "";
 
+    // System Address Label, 8进制数
     private int sal = 0;
 
+    // 协议版本号 16进制
     private int version = 0;
 
     /**
      * 解析原始数据，分别是data跟label，例如
-     *  472301,374
+     *
+     * 472301,374
+     *
      * @param data
      * @param label
      * @return
@@ -29,43 +33,34 @@ public class ALOBean implements IBean{
 
         bean.label = label;
 
-        data = Utils.hex2bitFormat(data, false);
+        bean.version = Integer.parseInt(data.substring(4), 16);
 
-        bean.parseDataBits(data);
+        String sal = data.substring(2, 4);
+
+        sal = Utils.hex2bit(sal);
+
+        sal = Utils.mustXchars(sal, 8);
+
+        sal = StringUtils.reverse(sal);
+
+        bean.sal = Utils.bit2oct(sal);
 
         return bean;
-    };
-
-    /**
-     * 解析bit格式的data数据, 提取sal和version
-     * @param bits
-     */
-    public void parseDataBits(String bits){
-
-
-        String sal = bits.substring(8, 16);
-        this.sal = Utils.bit2octReversely(sal);
-
-        String versionS = bits.substring(17, 24);
-
-
-        this.version =  Integer.parseInt(versionS, 2);
-
     }
 
     public String asWord(){
 
-        String salBits = Utils.oct2bitFormat("" + this.sal);
+        String salBits = Utils.oct2bit("" + this.sal);
 
         salBits = StringUtils.reverse(salBits);
 
-        String versionBits = Utils.hex2bitFormat("" + this.version, false);
+        String versionBits = Utils.hex2bit(this.version);
 
         if(versionBits.length() < 8){
             versionBits = Utils.leftPadding(versionBits, 8);
         }
 
-        return this.label + "," + this.TYPE + Utils.bit2hex(salBits + versionBits);
+        return this.label + "," + this.TYPE + Utils.bit2hex(salBits + versionBits).toUpperCase();
     }
 
     public String getLabel() {

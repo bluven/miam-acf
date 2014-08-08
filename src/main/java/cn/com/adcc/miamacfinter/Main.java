@@ -1,8 +1,12 @@
 package cn.com.adcc.miamacfinter;
 
+import cn.com.adcc.miamacfinter.aid.beans.ALOBean;
+import cn.com.adcc.miamacfinter.aid.beans.ALRBean;
 import cn.com.adcc.miamacfinter.aid.clients.*;
 import cn.com.adcc.miamacfinter.aid.handlers.IFileReceivedHandler;
 import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
+import cn.com.adcc.miamacfinter.aid.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by bluven on 14-8-5.
@@ -10,9 +14,11 @@ import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-//        testSocket();
-//        testNetty();
-          testClient();
+        ALOBean alo = ALOBean.parseRaw("473F01", "374");
+
+        System.out.println(alo.asWord());
+
+        System.out.println(Utils.reverseBitsByte(403));
     }
 
     public static void testSocket() throws Exception {

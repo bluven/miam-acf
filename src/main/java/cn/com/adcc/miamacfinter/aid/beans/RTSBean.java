@@ -40,8 +40,8 @@ public class RTSBean implements IBean {
 
     public String asWord() {
 
-        String dst = Utils.leftPadHex(Integer.toHexString((int)this.dst));
-        String wordCount = Utils.leftPadHex(Integer.toHexString(this.wordCount));
+        String dst = Utils.twoHex(Integer.toHexString((int) this.dst));
+        String wordCount = Utils.twoHex(Integer.toHexString(this.wordCount));
 
         StringBuilder word = new StringBuilder(this.label).append(',').append(this.TYPE).append(dst).append(wordCount);
 

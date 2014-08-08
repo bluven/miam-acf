@@ -29,7 +29,7 @@ public class ClientUtils {
             String label = fields[3];
             String data = fields[4];
 
-            data = Utils.must6chars(data, 6);
+            data = Utils.must6chars(data);
 
             if(data.startsWith(ALRBean.TYPE)){
 

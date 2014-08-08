@@ -29,24 +29,18 @@ public class ALRBean implements IBean{
 
         bean.label = label;
 
-        data = Utils.hex2bitFormat(data, false);
-
-        String versionS = data.substring(17, 24);
-
-        bean.version =  Integer.parseInt(versionS, 2);
+        bean.version =  Integer.parseInt(data.substring(4), 16);
 
         return bean;
     }
 
     public String asWord(){
 
-        String versionBits = Utils.hex2bitFormat("" + this.version, false);
+        String version = Integer.toHexString(this.version);
 
-        if(versionBits.length() < 8){
-            versionBits = Utils.leftPadding(versionBits, 16);
-        }
+        version = Utils.mustXchars(version, 4);
 
-        return this.label + "," + this.TYPE + Utils.bit2hex(versionBits);
+        return this.label + "," + this.TYPE + version;
     }
 
     public String getLabel() {
