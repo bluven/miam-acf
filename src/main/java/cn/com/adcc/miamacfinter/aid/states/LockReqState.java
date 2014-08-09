@@ -1,5 +1,7 @@
 package cn.com.adcc.miamacfinter.aid.states;
 
+import cn.com.adcc.miamacfinter.aid.clients.IContext;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,19 +16,19 @@ public class LockReqState extends State {
 
         //super.context.sendCommand("add,0,270");
         super.context.sendALO();
-        super.context.transferTo(new ALOIdleState());
+        super.context.transferTo(new ALOIdleState(super.context));
 
         this.startPingPong();
     }
 
     private void startPingPong(){
-        System.out.println("test");
-        Timer timer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+        super.context.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 LockReqState.this.getContext().sendCommand("transmit,0,172,00009F");
             }
         }, 1000, 1000);
     }
+
+
 }

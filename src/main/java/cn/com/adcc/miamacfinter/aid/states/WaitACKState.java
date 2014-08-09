@@ -1,6 +1,7 @@
 package cn.com.adcc.miamacfinter.aid.states;
 
 import cn.com.adcc.miamacfinter.aid.beans.ACKBean;
+import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
 import cn.com.adcc.miamacfinter.aid.beans.CommandLDUBean;
 
 /**
@@ -8,22 +9,32 @@ import cn.com.adcc.miamacfinter.aid.beans.CommandLDUBean;
  */
 public class WaitACKState extends State {
 
+    private CommandFileBean fileBean;
+
+    private CommandLDUBean lduWaitACK;
+
+    public WaitACKState(CommandFileBean fileBean, CommandLDUBean lduBean){
+        this.fileBean = fileBean;
+        this.lduWaitACK = lduBean;
+    }
+
     public void handleACK(ACKBean bean){
 
-        CommandLDUBean lduBean = context.getOutLduBean();
+        if(this.lduWaitACK.matchACK(bean)){
 
-        if(lduBean.matchACK(bean)){
-
-            CommandLDUBean nextLDU = context.getOutFileBean().nextLDU();
+            CommandLDUBean nextLDU = this.fileBean.nextLDU();
 
             if(nextLDU == null){
+
                 context.transferTo(new LinkIdleState());
+                context.handleFileSentResult(fileBean.getFileId(), true);
+
                 return;
             }
 
             context.transmit(nextLDU.getRtsBean());
-            context.setOutLduBean(nextLDU);
-            context.transferTo(new WaitCTSState());
+
+            context.transferTo(new WaitCTSState(this.fileBean, nextLDU));
 
         } else {
             // todo: 异常处理

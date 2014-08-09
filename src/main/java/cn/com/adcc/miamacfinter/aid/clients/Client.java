@@ -1,13 +1,18 @@
 package cn.com.adcc.miamacfinter.aid.clients;
 
 import cn.com.adcc.miamacfinter.aid.beans.*;
-import cn.com.adcc.miamacfinter.aid.handlers.IFileReceivedHandler;
+import cn.com.adcc.miamacfinter.aid.handlers.IFileHandler;
 import cn.com.adcc.miamacfinter.aid.states.IState;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by bluven on 14-8-6.
  */
-public abstract class Client implements IContext {
+public abstract class Client implements IContext, IClient {
+
+    private Timer timer;
 
     private IState state;
 
@@ -19,12 +24,6 @@ public abstract class Client implements IContext {
 
     private String cmuLabel;
 
-    // 待发送文件
-    private CommandFileBean outFileBean;
-
-    // 在发送的ldubean
-    private CommandLDUBean outLduBean;
-
     // 待接收文件
     private CommandFileBean fileBean;
 
@@ -32,16 +31,20 @@ public abstract class Client implements IContext {
 
     private RTSBean rtsBean;
 
-    private IFileReceivedHandler fileReceivedHandler;
+    private IFileHandler fileHandler;
 
     public abstract void close();
+
+    public void connect(String aidLabel){
+        this.connect("192.168.4.253", 8766, aidLabel, "304");
+    }
 
     public abstract void connect(String host, int port, String aidLabel, String cmuLabel);
 
     public abstract void sendCommand(String command);
 
-    public void onFileReceived(IFileReceivedHandler handler){
-        this.fileReceivedHandler = handler;
+    public void registerFileHandler(IFileHandler handler){
+        this.fileHandler = handler;
     }
 
     public void subscribe() {
@@ -76,25 +79,36 @@ public abstract class Client implements IContext {
         this.transmit(bean);
     }
 
-    public void sendFile(CommandFileBean fileBean){
+    public void sendFile(int fileId, String fileContent){
+
+        CommandFileBean fileBean = BeanBuilder.build(fileId, fileContent, this.cmuLabel);
+
+        fileBean.setFileId(fileId);
+
         this.state.sendFile(fileBean);
+    }
+
+    public void handleFileSentResult(int fileId, boolean result){
+        this.fileHandler.onSentResult(fileId, result);
     }
 
     public void receiveFile(){
         System.out.println("File Received");
-        if(this.fileBean != null){
-            this.receiveFile(this.fileBean);
-        }
+        this.receiveFile(this.fileBean);
     }
 
     public void receiveFile(CommandFileBean fileBean){
-        if(fileReceivedHandler != null){
-            fileReceivedHandler.handle(fileBean);
+        if(this.fileHandler != null){
+            this.fileHandler.onReceived(fileBean);
         }
     }
 
-    public boolean isProcessingAnyFile(){
-        return this.fileBean != null || this.outFileBean != null;
+    public void scheduleAtFixedRate(TimerTask timerTask, int delay, int interval) {
+        timer.scheduleAtFixedRate(timerTask, delay, interval);
+    }
+
+    public void schedule(TimerTask timerTask, int delay) {
+        timer.schedule(timerTask, delay);
     }
 
     public IState getState() {
@@ -158,31 +172,15 @@ public abstract class Client implements IContext {
     }
 
     public void setRtsBean(RTSBean rts) {
-
         this.rtsBean = rts;
     }
 
-    public CommandLDUBean getOutLduBean() {
-        return outLduBean;
+    public Timer getTimer() {
+        return timer;
     }
 
-    public void setOutLduBean(CommandLDUBean outLduBean) {
-        this.outLduBean = outLduBean;
+    public void setTimer(Timer timer) {
+        this.timer = timer;
     }
 
-    public CommandFileBean getOutFileBean() {
-        return outFileBean;
-    }
-
-    public void setOutFileBean(CommandFileBean outFileBean) {
-        this.outFileBean = outFileBean;
-    }
-
-    public IFileReceivedHandler getFileReceivedHandler() {
-        return fileReceivedHandler;
-    }
-
-    public void setFileReceivedHandler(IFileReceivedHandler fileReceivedHandler) {
-        this.fileReceivedHandler = fileReceivedHandler;
-    }
 }

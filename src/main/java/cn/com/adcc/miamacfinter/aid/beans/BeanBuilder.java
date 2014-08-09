@@ -2,11 +2,16 @@ package cn.com.adcc.miamacfinter.aid.beans;
 
 public class BeanBuilder {
 
+    public static CommandFileBean build(int fileNum, String msg, String cmuLabel){
+        return build('G', 'W', '1',  cmuLabel, msg, fileNum);
+    }
+
     //构建Msg的CommandFileBean
     public static CommandFileBean build(char dst, char purpose, char origin, String label,
-                                 String Msg, int fileNum, EOTBean.EOTType eotType) {
+                                 String Msg, int fileNum) {
         //定义变量
         CommandFileBean fileBean=new CommandFileBean();
+
         try
         {
             Msg = new StringBuilder().append(origin).append(purpose).append(dst).append(Msg).toString();
@@ -17,7 +22,7 @@ public class BeanBuilder {
                 //进行报文拆分
                 String firstLDUMsg = Msg.substring(0,626);
 
-                CommandLDUBean firstlduBean = GetLDUBeans(dst, purpose, origin, label, firstLDUMsg,fileNum,0, eotType);
+                CommandLDUBean firstlduBean = GetLDUBeans(dst, purpose, origin, label, firstLDUMsg,fileNum,0, EOTBean.EOTType.notFinal);
 
                 fileBean.appendLDUBean(firstlduBean);
 
@@ -28,20 +33,20 @@ public class BeanBuilder {
                 for(int i=0;i<endLDUCount;i++)
                 {
                     String ldu = endLDUMsg.substring(i*632,(i+1)*632);
-                    CommandLDUBean lastlduBean = GetLDUBeans(dst, purpose, origin, label, ldu, fileNum, i+1, eotType);
+                    CommandLDUBean lastlduBean = GetLDUBeans(dst, purpose, origin, label, ldu, fileNum, i+1, EOTBean.EOTType.notFinal);
 
                     fileBean.appendLDUBean(lastlduBean);
                 }
                 if (endLDUMod!=0)
                 {
                     String modMsg=endLDUMsg.substring(endLDUCount*632, endLDUCount*632+(int)endLDUMod);
-                    CommandLDUBean modlduBean = GetLDUBeans(dst, purpose, origin, label, modMsg, fileNum, endLDUCount, eotType);
+                    CommandLDUBean modlduBean = GetLDUBeans(dst, purpose, origin, label, modMsg, fileNum, endLDUCount, EOTBean.EOTType.Final);
                     fileBean.appendLDUBean(modlduBean);
                 }
             }
             else
             {
-                CommandLDUBean lduBean =GetLDUBeans(dst, purpose, origin, label, Msg,fileNum,0, eotType);
+                CommandLDUBean lduBean =GetLDUBeans(dst, purpose, origin, label, Msg,fileNum,0, EOTBean.EOTType.Final);
                 fileBean.appendLDUBean(lduBean);
             }
 

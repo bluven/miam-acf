@@ -2,18 +2,16 @@ package cn.com.adcc.miamacfinter.aid.clients;
 
 import cn.com.adcc.miamacfinter.aid.exceptions.BaseException;
 import cn.com.adcc.miamacfinter.aid.states.InitialState;
-import cn.com.adcc.miamacfinter.aid.utils.ClientUtils;
 
 import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.Queue;
+import java.util.Timer;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by bluven on 14-8-7.
  */
-public class ConcurrentClient extends NewSocketClient {
+public class ConcurrentClient extends SocketClient {
 
     private transient boolean running;
 
@@ -28,6 +26,8 @@ public class ConcurrentClient extends NewSocketClient {
         this.running = true;
 
         this.setState(new InitialState(this));
+
+        this.setTimer(new Timer());
 
         this.commandQueue = new ArrayBlockingQueue<String>(200);
     }

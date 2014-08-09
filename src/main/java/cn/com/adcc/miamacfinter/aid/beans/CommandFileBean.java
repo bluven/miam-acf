@@ -11,8 +11,11 @@ import java.util.List;
  */
 public class CommandFileBean {
 
-    //定义文件编号
+    //定义文件编号，发送协议文件序列号
     private int fileNum = -1;
+
+    // 文件ID, 只有发送的文件才有
+    private Integer fileId;
 
     private List<CommandLDUBean> LDUBeans = new ArrayList<CommandLDUBean>();
 
@@ -44,6 +47,14 @@ public class CommandFileBean {
         for(CommandLDUBean lduBean: LDUBeans){
            lduBean.inspect();
         }
+    }
+
+    public Integer getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(Integer fileId) {
+        this.fileId = fileId;
     }
 
     public boolean isFileSeqNumMatch(int fileNum_){

@@ -1,0 +1,83 @@
+package cn.com.adcc.miamacfinter;
+
+/**
+ * Created by bluven on 14-8-9.
+ */
+public class ProtocolConstants {
+
+    public static final int T1_MIN = 0;
+
+    public static final int T1_MAX = 100;
+
+    public static final int T2_MIN = 500;
+
+    public static final int T2_MAX = 700;
+
+    public static final int T3_MIN = 0;
+
+    public static final int T3_MAX = 100;
+
+    public static final int T4_MIN = 15000;
+
+    public static final int T4_MAX = 18000;
+
+    public static final int T5_MIN = 500;
+
+    public static final int T5_MAX = 700;
+
+    public static final int T6_MIN = 50;
+
+    public static final int T6_MAX = 500;
+
+    public static final int T7_MIN = 10;
+
+    public static final int T7_MAX = 100;
+
+    public static final int T8_MIN = 0;
+
+    public static final int T8_MAX = 200;
+
+    public static final int T9_MIN = 2500;
+
+    public static final int T9_MAX = 2700;
+
+    public static final int T10_MIN = 2700;
+
+    public static final int T10_MAX = 3000;
+
+    public static final int T11_MIN = 0;
+
+    public static final int T11_MAX = 100;
+
+    public static final int T12_MIN = 200;
+
+    public static final int T12_MAX = 250;
+
+    public static final int T13_MIN = 0;
+
+    public static final int T13_MAX = 200;
+
+    public static final int T14_MIN = 120000;
+
+    public static final int T14_MAX = 132000;
+
+    public static final int T15_MIN = 0;
+
+    public static final int T15_MAX = 180;
+
+    public static final int T16_MIN = 220;
+
+    public static final int T16_MAX = 330;
+
+    public static final int N1 = 5;
+
+    public static final int N2 = 20;
+
+    public static final int N3 = 5;
+
+    public static final int N4 = 3;
+
+    public static final int N5 = 3;
+
+    public static final int N6 = 3;
+}

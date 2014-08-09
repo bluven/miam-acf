@@ -7,6 +7,7 @@ import cn.com.adcc.miamacfinter.aid.beans.RTSBean;
 import cn.com.adcc.miamacfinter.aid.states.IState;
 
 import java.io.IOException;
+import java.util.TimerTask;
 
 /**
  * Created by bluven on 14-8-3.
@@ -16,8 +17,6 @@ public interface IContext {
     void subscribe();
 
     void lock();
-
-    boolean isProcessingAnyFile();
 
     void sendCommand(String command);
 
@@ -51,15 +50,15 @@ public interface IContext {
 
     void setRtsBean(RTSBean rts);
 
-    CommandFileBean getOutFileBean();
-
-    void setOutFileBean(CommandFileBean fileBean);
-
-    CommandLDUBean getOutLduBean();
-
-    void setOutLduBean(CommandLDUBean lduBean);
-
     void receiveFile();
 
     void receiveFile(CommandFileBean fileBean);
+
+    void handleFileSentResult(int fileId, boolean result);
+
+    void scheduleAtFixedRate(TimerTask timerTask, int delay, int interval);
+
+    void schedule(TimerTask timerTask, int delay);
+
+
 }
