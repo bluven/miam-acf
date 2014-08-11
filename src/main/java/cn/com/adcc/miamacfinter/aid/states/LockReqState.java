@@ -1,8 +1,5 @@
 package cn.com.adcc.miamacfinter.aid.states;
 
-import cn.com.adcc.miamacfinter.aid.clients.IContext;
-
-import java.util.Timer;
 import java.util.TimerTask;
 
 /**

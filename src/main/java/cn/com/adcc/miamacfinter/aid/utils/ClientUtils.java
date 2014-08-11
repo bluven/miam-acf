@@ -67,11 +67,11 @@ public class ClientUtils {
 
                 state.handleACK(ACKBean.parseRaw(data, label));
 
-            } else if(false && data.startsWith(DataBean.TYPE)) {
+            } else if(data.startsWith(DataBean.TYPE)) {
 
                 state.handleDataBean(new DataBean(data.substring(1), label));
 
-            } else if(false && data.startsWith(PartialDataBean.TYPE)) {
+            } else if(data.startsWith(PartialDataBean.TYPE)) {
 
                 state.handleDataBean(new PartialDataBean(data.substring(1), label));
             }

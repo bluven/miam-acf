@@ -22,7 +22,7 @@ public class Main {
         client.registerFileHandler(new IFileHandler() {
 
             public void onReceived(CommandFileBean fileBean) {
-                fileBean.inspect();
+                System.out.println("File received");
             }
 
             public void onSentResult(int fileId, boolean result) {
@@ -32,7 +32,7 @@ public class Main {
 
         // 374: cabin
         // 304: cmu
-//        client.connect("192.168.4.253", 8766, "374", "304");
-        client.connect("127.0.0.1", 1234, "374", "304");
+        client.connect("374");
+//        client.connect("127.0.0.1", 1234, "374", "304");
     }
 }

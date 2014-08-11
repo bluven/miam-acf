@@ -4,6 +4,7 @@ import cn.com.adcc.miamacfinter.aid.beans.*;
 import cn.com.adcc.miamacfinter.aid.handlers.IFileHandler;
 import cn.com.adcc.miamacfinter.aid.states.IState;
 
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,6 +14,8 @@ import java.util.TimerTask;
 public abstract class Client implements IContext, IClient {
 
     private Timer timer;
+
+    private Map<String, TimerTask> tasks;
 
     private IState state;
 
@@ -25,11 +28,9 @@ public abstract class Client implements IContext, IClient {
     private String cmuLabel;
 
     // 待接收文件
-    private CommandFileBean fileBean;
+    private CommandFileBean inputFileBean;
 
-    private CommandLDUBean lduBean;
-
-    private RTSBean rtsBean;
+    private CommandLDUBean inputLduBean;
 
     private IFileHandler fileHandler;
 
@@ -93,8 +94,8 @@ public abstract class Client implements IContext, IClient {
     }
 
     public void receiveFile(){
-        System.out.println("File Received");
-        this.receiveFile(this.fileBean);
+        this.receiveFile(this.inputFileBean);
+        this.inputFileBean = null;
     }
 
     public void receiveFile(CommandFileBean fileBean){
@@ -105,6 +106,15 @@ public abstract class Client implements IContext, IClient {
 
     public void scheduleAtFixedRate(TimerTask timerTask, int delay, int interval) {
         timer.scheduleAtFixedRate(timerTask, delay, interval);
+    }
+
+    public void saveTask(String name, TimerTask task) {
+        this.tasks.put(name, task);
+    }
+
+    public void cancelTask(String name){
+        TimerTask task = this.tasks.remove(name);
+        task.cancel();
     }
 
     public void schedule(TimerTask timerTask, int delay) {
@@ -151,28 +161,20 @@ public abstract class Client implements IContext, IClient {
         this.port = port;
     }
 
-    public CommandFileBean getFileBean() {
-        return fileBean;
+    public CommandFileBean getInputFileBean() {
+        return inputFileBean;
     }
 
-    public void setFileBean(CommandFileBean fileBean) {
-        this.fileBean = fileBean;
+    public void setInputFileBean(CommandFileBean fileBean) {
+        this.inputFileBean = fileBean;
     }
 
-    public CommandLDUBean getLduBean() {
-        return lduBean;
+    public CommandLDUBean getInputLduBean() {
+        return inputLduBean;
     }
 
-    public void setLduBean(CommandLDUBean lduBean) {
-        this.lduBean = lduBean;
-    }
-
-    public RTSBean getRtsBean() {
-        return this.rtsBean;
-    }
-
-    public void setRtsBean(RTSBean rts) {
-        this.rtsBean = rts;
+    public void setInputLduBean(CommandLDUBean inputLduBean) {
+        this.inputLduBean = inputLduBean;
     }
 
     public Timer getTimer() {
@@ -183,4 +185,11 @@ public abstract class Client implements IContext, IClient {
         this.timer = timer;
     }
 
+    public Map<String, TimerTask> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Map<String, TimerTask> tasks) {
+        this.tasks = tasks;
+    }
 }

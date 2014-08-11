@@ -38,17 +38,9 @@ public interface IContext {
 
     void sendALO();
 
-    CommandFileBean getFileBean();
+    CommandFileBean getInputFileBean();
 
-    void setFileBean(CommandFileBean fileBean);
-
-    CommandLDUBean getLduBean();
-
-    void setLduBean(CommandLDUBean lduBean);
-
-    RTSBean getRtsBean();
-
-    void setRtsBean(RTSBean rts);
+    void setInputFileBean(CommandFileBean fileBean);
 
     void receiveFile();
 
@@ -60,5 +52,9 @@ public interface IContext {
 
     void schedule(TimerTask timerTask, int delay);
 
+    //  保存倒计时任务
+    void saveTask(String name, TimerTask task);
 
+    // 取消任务并删除
+    void cancelTask(String name);
 }

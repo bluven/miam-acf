@@ -23,11 +23,9 @@ public class ConcurrentClient extends SocketClient {
 
     protected ConcurrentClient(){
 
+        super();
+
         this.running = true;
-
-        this.setState(new InitialState(this));
-
-        this.setTimer(new Timer());
 
         this.commandQueue = new ArrayBlockingQueue<String>(200);
     }

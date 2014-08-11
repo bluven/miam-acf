@@ -7,7 +7,9 @@ import cn.com.adcc.miamacfinter.aid.utils.ClientUtils;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by bluven on 14-8-7.
@@ -26,6 +28,7 @@ public class SocketClient extends Client {
 
         this.setTimer(new Timer());
         this.setState(new InitialState(this));
+        this.setTasks(new HashMap());
     }
 
     public static Client newInstance(){

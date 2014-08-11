@@ -6,7 +6,6 @@ import cn.com.adcc.miamacfinter.aid.beans.CTSBean;
 import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
 import cn.com.adcc.miamacfinter.aid.beans.CommandLDUBean;
 import cn.com.adcc.miamacfinter.aid.beans.RTSBean;
-import cn.com.adcc.miamacfinter.aid.exceptions.BaseException;
 
 import java.util.TimerTask;
 
@@ -25,19 +24,22 @@ public class LinkIdleState extends State {
 
         context.transmit(cts);
 
-        context.schedule(new TimerTask() {
+        // 进行T9倒计时，到时结束会将状态切换成LinkIdleState
+        // todo: 需要在数据接收完成后关闭该任务
+
+        TimerTask t9 = new TimerTask() {
 
             @Override
             public void run() {
                 context.transferTo(new LinkIdleState());
             }
+        };
 
-        }, ProtocolConstants.T9_MAX);
+        context.schedule(t9, ProtocolConstants.T9_MAX);
 
-        context.setRtsBean(rts);
+        context.saveTask("T9", t9);
 
-        context.transferTo(new WaitSOTState());
-
+        context.transferTo(new WaitSOTState(rts));
     }
 
     @Override
@@ -66,7 +68,7 @@ public class LinkIdleState extends State {
             throw new BaseException("One file is being processed.");
         }
 
-        context.setOutFileBean(fileBean);
+        context.setOutputFileBean(fileBean);
 
         CommandLDUBean firstLDU = fileBean.nextLDU();
 
