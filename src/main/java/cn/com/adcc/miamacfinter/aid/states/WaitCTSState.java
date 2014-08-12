@@ -28,13 +28,19 @@ public class WaitCTSState extends State {
 
         this.t5 = new TimerTask() {
 
-            private int counter = 1;
+            private int n3Counter = 1;
 
             @Override
             public void run() {
 
-                if(context.getState() instanceof WaitCTSState && counter < ProtocolConstants.N3){
-                    this.counter -= 1;
+                if(!(context.getState() instanceof WaitCTSState)){
+                    this.cancel();
+                    return;
+                }
+
+                if(n3Counter < ProtocolConstants.N3){
+
+                    this.n3Counter -= 1;
                     context.transmit(lduToSend.getRtsBean());
                 } else {
                     context.transferTo(new LinkIdleState());
@@ -55,6 +61,10 @@ public class WaitCTSState extends State {
             return ;
         }
 
+        this.cancelT5();
+
+        context.transmit(lduToSend.getSotBean());
+
         for(DataBean databean: this.lduToSend.getDataBeans()){
             context.transmit(databean);
         }
@@ -66,12 +76,12 @@ public class WaitCTSState extends State {
 
     public void handleNCTS(NCTSBean bean){
 
-        this.t5.cancel();
-        this.t5 = null;
+        this.cancelT5();
 
         if(this.n1Counter > ProtocolConstants.N1){
             context.transferTo(new LinkIdleState());
             context.handleFileSentResult(this.fileBean.getFileId(), false);
+            System.out.println("n1 countdown");
             return;
         }
 
@@ -87,4 +97,11 @@ public class WaitCTSState extends State {
         this.startT5();
     }
 
+    public void cancelT5(){
+
+        if(this.t5 != null){
+            this.t5.cancel();
+            this.t5 = null;
+        }
+    }
 }

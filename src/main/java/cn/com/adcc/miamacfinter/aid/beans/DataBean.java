@@ -59,4 +59,19 @@ public class DataBean implements IBean {
         return word.toString();
     }
 
+    public String getHexData() {
+        return hexData;
+    }
+
+    public void setHexData(String hexData) {
+        this.hexData = hexData;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

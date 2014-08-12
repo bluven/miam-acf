@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class CommandFileBean {
 
-    //定义文件编号，发送协议文件序列号
+    //定义文件编号
     private int fileNum = -1;
 
     // 文件ID, 只有发送的文件才有
@@ -42,11 +42,15 @@ public class CommandFileBean {
         }
     }
 
-    public void inspect(){
-        // debug用
-        for(CommandLDUBean lduBean: LDUBeans){
-           lduBean.inspect();
+	public String getFileContent() {
+        //定义临时变量
+        StringBuilder fileContent=new StringBuilder();
+
+        //循环ldu数据,进行拼接
+        for(CommandLDUBean lduBean : this.LDUBeans) {
+            fileContent.insert(0,lduBean.getLduContent());
         }
+        return fileContent.reverse().toString();
     }
 
     public Integer getFileId() {
@@ -56,6 +60,8 @@ public class CommandFileBean {
     public void setFileId(Integer fileId) {
         this.fileId = fileId;
     }
+
+
 
     public boolean isFileSeqNumMatch(int fileNum_){
         return this.fileNum == fileNum_;

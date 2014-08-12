@@ -1,13 +1,6 @@
 package cn.com.adcc.miamacfinter.aid.utils;
 
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -179,6 +172,34 @@ public class Utils {
         value = (value & 0x33) << 2 | (value & 0xCC) >> 2;
         //每四位相互交换	43218765 -> 87654321
         return (byte)(value << 4 | value >> 4);
+    }
+
+    /**
+     * Convert hex string to byte[]
+     * @param hexString the hex string
+     * @return byte[]
+     */
+    public static char[] hexStringToBytes(String hexString) {
+        if (hexString == null || hexString.equals("")) {
+            return null;
+        }
+        hexString = hexString.toUpperCase();
+        int length = hexString.length() >> 1;
+        char[] hexChars = hexString.toCharArray();
+        char[] d = new char[length];
+        for (int i = 0; i < length; i++) {
+            int pos = i << 1;
+            d[i] = (char) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        }
+        return d;
+    }
+    /**
+     * Convert char to byte
+     * @param c char
+     * @return byte
+     */
+    private static byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
 }

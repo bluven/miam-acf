@@ -61,22 +61,4 @@ public class LinkIdleState extends State {
         waitCTS.startT5();
     }
 
-    /*
-    public static void sendFile(IContext context, CommandFileBean fileBean){
-
-        if(context.isProcessingAnyFile()){
-            throw new BaseException("One file is being processed.");
-        }
-
-        context.setOutputFileBean(fileBean);
-
-        CommandLDUBean firstLDU = fileBean.nextLDU();
-
-        context.setOutLduBean(firstLDU);
-
-        context.transmit(firstLDU.getRtsBean());
-
-        context.transferTo(new WaitCTSState(fileBean));
-    }
-    */
 }

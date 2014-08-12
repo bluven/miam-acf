@@ -11,7 +11,8 @@ public class SOTBean implements IBean{
 
     private String label;
 
-    private int gfi = 0;
+    // 默认为GPBOP
+    private int gfi = 3;
 
     private int fileSeqNum = 0;
 

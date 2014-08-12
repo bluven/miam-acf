@@ -1,5 +1,7 @@
 package cn.com.adcc.miamacfinter.aid.beans;
 
+import cn.com.adcc.miamacfinter.aid.utils.Utils;
+
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,7 @@ public class CommandLDUBean {
     List<DataBean> dataBeans = new ArrayList<DataBean>();
 
     //LDU 序列号
-    private int LDUNum = 0;
+    private int lduNum = 0;
 
     private RTSBean rtsBean;
 
@@ -29,17 +31,25 @@ public class CommandLDUBean {
         return dataBeans.size() == (rtsBean.getWordCount() - 2);
     }
 
-    public void inspect(){
+    public String getLduContent()
+    {
+        //定义临时变量
+        StringBuilder lduContent =new StringBuilder();
 
-        System.out.println(rtsBean.asWord());
-
-        System.out.println(sotBean.asWord());
-
-        for(DataBean data: dataBeans){
-            System.out.println(data.asWord());
+        //循环数据Word
+        for (int i=(dataBeans.size()-1);i>=0;i--)
+        {
+            lduContent.append(dataBeans.get(i).getHexData());
         }
 
-        System.out.println(eotBean.asWord());
+        //进行二进制转码
+        char[] chars = Utils.hexStringToBytes(lduContent.toString());
+
+        return new String(chars);
+    }
+
+    public int getWordCount(){
+        return this.dataBeans.size() + 2;
     }
 
     public List<DataBean> getDataBeans() {
@@ -51,11 +61,11 @@ public class CommandLDUBean {
     }
 
     public int getLDUNum() {
-        return LDUNum;
+        return lduNum;
     }
 
-    public void setLDUNum(int LDUNum) {
-        this.LDUNum = LDUNum;
+    public void setLDUNum(int lduNum) {
+        this.lduNum = lduNum;
     }
 
     public RTSBean getRtsBean() {

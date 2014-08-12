@@ -7,7 +7,7 @@ import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
  */
 public interface IFileHandler {
 
-    void onReceived(CommandFileBean fileBean);
+    void onReceived(String fileContent);
 
     void onSentResult(int fileId, boolean result);
 

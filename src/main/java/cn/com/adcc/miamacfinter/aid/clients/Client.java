@@ -100,7 +100,9 @@ public abstract class Client implements IContext, IClient {
 
     public void receiveFile(CommandFileBean fileBean){
         if(this.fileHandler != null){
-            this.fileHandler.onReceived(fileBean);
+
+            System.out.println(fileBean.getLDUBeans().size());
+            this.fileHandler.onReceived(fileBean.getFileContent());
         }
     }
 

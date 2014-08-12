@@ -73,7 +73,32 @@ public class ClientUtils {
 
             } else if(data.startsWith(PartialDataBean.TYPE)) {
 
-                state.handleDataBean(new PartialDataBean(data.substring(1), label));
+                data=data.substring(1);
+
+                switch (data.charAt(0)){
+                    case 'B':
+                    {
+                        data=data.substring(1);
+                        break;
+                    }
+                    case 'A':
+                    {
+                        data=data.substring(2);
+                        break;
+                    }
+                    case '9':
+                    {
+                        data=data.substring(3);
+                        break;
+                    }
+                    case '8':
+                    {
+                        data=data.substring(4);
+                        break;
+                    }
+
+                }
+                state.handleDataBean(new PartialDataBean(data, label));
             }
         }
     }
