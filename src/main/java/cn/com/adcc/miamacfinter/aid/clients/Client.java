@@ -89,19 +89,17 @@ public abstract class Client implements IContext, IClient {
         this.state.sendFile(fileBean);
     }
 
-    public void handleFileSentResult(int fileId, boolean result){
+    public void triggerFileSentEvent(int fileId, boolean result){
         this.fileHandler.onSentResult(fileId, result);
     }
 
-    public void receiveFile(){
-        this.receiveFile(this.inputFileBean);
+    public void triggerFileReceived(){
+        this.triggerFileReceived(this.inputFileBean);
         this.inputFileBean = null;
     }
 
-    public void receiveFile(CommandFileBean fileBean){
+    public void triggerFileReceived(CommandFileBean fileBean){
         if(this.fileHandler != null){
-
-            System.out.println(fileBean.getLDUBeans().size());
             this.fileHandler.onReceived(fileBean.getFileContent());
         }
     }

@@ -44,7 +44,7 @@ public class WaitCTSState extends State {
                     context.transmit(lduToSend.getRtsBean());
                 } else {
                     context.transferTo(new LinkIdleState());
-                    context.handleFileSentResult(fileBean.getFileId(), false);
+                    context.triggerFileSentEvent(fileBean.getFileId(), false);
                     this.cancel();
                 }
             }
@@ -80,7 +80,7 @@ public class WaitCTSState extends State {
 
         if(this.n1Counter > ProtocolConstants.N1){
             context.transferTo(new LinkIdleState());
-            context.handleFileSentResult(this.fileBean.getFileId(), false);
+            context.triggerFileSentEvent(this.fileBean.getFileId(), false);
             System.out.println("n1 countdown");
             return;
         }

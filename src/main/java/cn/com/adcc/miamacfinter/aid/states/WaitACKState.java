@@ -27,7 +27,7 @@ public class WaitACKState extends State {
             if(nextLDU == null){
 
                 context.transferTo(new LinkIdleState());
-                context.handleFileSentResult(fileBean.getFileId(), true);
+                context.triggerFileSentEvent(fileBean.getFileId(), true);
 
                 return;
             }

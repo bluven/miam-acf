@@ -1,12 +1,9 @@
 package cn.com.adcc.miamacfinter.aid.clients;
 
 import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
-import cn.com.adcc.miamacfinter.aid.beans.CommandLDUBean;
 import cn.com.adcc.miamacfinter.aid.beans.IBean;
-import cn.com.adcc.miamacfinter.aid.beans.RTSBean;
 import cn.com.adcc.miamacfinter.aid.states.IState;
 
-import java.io.IOException;
 import java.util.TimerTask;
 
 /**
@@ -42,11 +39,11 @@ public interface IContext {
 
     void setInputFileBean(CommandFileBean fileBean);
 
-    void receiveFile();
+    void triggerFileReceived();
 
-    void receiveFile(CommandFileBean fileBean);
+    void triggerFileReceived(CommandFileBean fileBean);
 
-    void handleFileSentResult(int fileId, boolean result);
+    void triggerFileSentEvent(int fileId, boolean result);
 
     void scheduleAtFixedRate(TimerTask timerTask, int delay, int interval);
 

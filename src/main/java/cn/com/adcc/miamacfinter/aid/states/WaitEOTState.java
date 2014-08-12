@@ -41,7 +41,7 @@ public class WaitEOTState extends State {
             // todo: CRC validate
 
             if(eot.isFinalEOT()){
-                context.receiveFile();
+                context.triggerFileReceived();
             } else {
                 // todo: 可能需要进一步处理
             }
