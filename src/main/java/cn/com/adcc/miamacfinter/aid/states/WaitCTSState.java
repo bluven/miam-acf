@@ -40,7 +40,7 @@ public class WaitCTSState extends State {
 
                 if(n3Counter < ProtocolConstants.N3){
 
-                    this.n3Counter -= 1;
+                    this.n3Counter += 1;
                     context.transmit(lduToSend.getRtsBean());
                 } else {
                     context.transferTo(new LinkIdleState());

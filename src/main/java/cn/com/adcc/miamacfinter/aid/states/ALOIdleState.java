@@ -13,8 +13,6 @@ public class ALOIdleState extends State {
     // T12计时器间隔, 200ms
     public final static int T12_DELAY = 200;
 
-    public final static int MAX_RETRY = 3;
-
     // 尝试计时器
     private TimerTask t12;
 
@@ -24,8 +22,6 @@ public class ALOIdleState extends State {
 
             @Override
             public void run() {
-
-                System.out.println("cycle");
 
                 if(context.getState() instanceof ALOIdleState){
 

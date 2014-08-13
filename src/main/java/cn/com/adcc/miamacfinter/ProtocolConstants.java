@@ -59,6 +59,10 @@ public class ProtocolConstants {
 
     public static final int T14_MIN = 120000;
 
+    // In-complete file timer, 接收方（sink）用
+    // 在多LDU文件发送的情况下， 接收方反馈ACK或NAK后(不考虑最后一个LDU)，启动T14计时器,
+    // 在T14倒计前仍未收到下一个LDU的RTS时, 取消当前文件的接收，
+    // 并反馈SYN至发送方
     public static final int T14_MAX = 132000;
 
     public static final int T15_MIN = 0;

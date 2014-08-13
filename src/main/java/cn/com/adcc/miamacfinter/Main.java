@@ -4,6 +4,7 @@ import cn.com.adcc.miamacfinter.aid.clients.*;
 import cn.com.adcc.miamacfinter.aid.handlers.IFileHandler;
 import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 /**
@@ -38,12 +39,14 @@ public class Main {
 
         // 374: cabin
         // 304: cmu
-        client.connect("374");
-//        client.connect("127.0.0.1", 1234, "374", "304");
+//        client.connect("374");
+        client.connect("127.0.0.1", 1234, "374", "304");
 
 
-        /*
-        client.schedule(new TimerTask() {
+
+        Timer timer = new Timer();
+
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
 
@@ -57,10 +60,10 @@ public class Main {
 
                 content.append(",AID");
 
-                //client.sendFile(1, content.toString());
+                client.sendFile(1, content.toString());
             }
         }, 5000);
-        */
+
     }
 
 }

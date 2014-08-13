@@ -1,13 +1,13 @@
 package cn.com.adcc.miamacfinter.aid.states;
 
+import java.util.TimerTask;
+
 import cn.com.adcc.miamacfinter.ProtocolConstants;
 import cn.com.adcc.miamacfinter.aid.clients.IContext;
 import cn.com.adcc.miamacfinter.aid.beans.CTSBean;
 import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
 import cn.com.adcc.miamacfinter.aid.beans.CommandLDUBean;
 import cn.com.adcc.miamacfinter.aid.beans.RTSBean;
-
-import java.util.TimerTask;
 
 /**
  * Created by bluven on 14-8-3.
@@ -16,9 +16,11 @@ public class LinkIdleState extends State {
 
     public void handleRTS(RTSBean rts){
 
+        final IContext context = this.getContext();
+
         CTSBean cts = new CTSBean();
 
-        cts.setLabel(context.getCmuLabel());
+        cts.setLabel(super.context.getCmuLabel());
         cts.setDst(rts.getDst());
         cts.setWordCount(rts.getWordCount());
 
@@ -29,11 +31,13 @@ public class LinkIdleState extends State {
 
         TimerTask t9 = new TimerTask() {
 
-            @Override
             public void run() {
                 context.transferTo(new LinkIdleState());
             }
         };
+
+        // 收到RTS，取消T14
+        context.cancelTask("T14");
 
         context.schedule(t9, ProtocolConstants.T9_MAX);
 
@@ -44,7 +48,6 @@ public class LinkIdleState extends State {
 
     @Override
     public void sendFile(CommandFileBean fileBean){
-
         sendFile(super.context, fileBean);
     }
 

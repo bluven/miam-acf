@@ -49,7 +49,7 @@ public abstract class Client implements IContext, IClient {
     }
 
     public void subscribe() {
-        String command = "add,0," + aidLabel;
+        String command = "add,0," + this.aidLabel;
         this.sendCommand(command);
     }
 
@@ -113,8 +113,12 @@ public abstract class Client implements IContext, IClient {
     }
 
     public void cancelTask(String name){
+
         TimerTask task = this.tasks.remove(name);
-        task.cancel();
+
+        if(task != null){
+            task.cancel();
+        }
     }
 
     public void schedule(TimerTask timerTask, int delay) {

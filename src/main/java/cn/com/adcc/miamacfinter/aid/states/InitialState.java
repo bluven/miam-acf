@@ -3,6 +3,9 @@ package cn.com.adcc.miamacfinter.aid.states;
 import cn.com.adcc.miamacfinter.aid.clients.IContext;
 
 /**
+ *
+ * 初始状态，网络未链接
+ *
  * Created by bluven on 14-8-3.
  */
 public class InitialState extends State{

@@ -14,15 +14,23 @@ public class SYNBean implements IBean {
 
     public static SYNBean parseRaw(String data, String label){
 
-    	SYNBean bean = new SYNBean();
+        int fileSeqNum = Integer.parseInt(data.substring(2, 4), 16);
 
-        bean.label = label;
+        String statusCode = data.substring(4);
 
-        bean.fileSeqNum = Integer.parseInt(data.substring(2, 4), 16);
+        return new SYNBean(label, fileSeqNum, statusCode);
+    }
 
-        bean.statusCode = data.substring(4);
+    public SYNBean(){
+        this.label = "";
+        this.fileSeqNum = 0;
+        this.statusCode = "";
+    }
 
-        return bean;
+    public SYNBean(String label, int fileSeqNum, String statusCode){
+        this.label = label;
+        this.fileSeqNum = fileSeqNum;
+        this.statusCode = statusCode;
     }
 
     public String asWord() {
