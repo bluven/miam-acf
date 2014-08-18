@@ -22,7 +22,7 @@ public class BUSYBean implements IBean {
         bean.statusCode = data.substring(4);
 
         return bean;
-    };
+    }
 
     public String asWord() {
 

@@ -1,4 +1,4 @@
-package cn.com.adcc.miamacfinter;
+package cn.com.adcc.miamacfinter.aid.constants;
 
 /**
  * Created by bluven on 14-8-9.
@@ -84,4 +84,18 @@ public class ProtocolConstants {
     public static final int N5 = 3;
 
     public static final int N6 = 3;
+
+    public static final String MISSING_SOT_WORD = "80";
+
+    public static final String LDU_SEQ_NUM_ERR = "81";
+
+    public static final String MISSING_EOT_WORD = "83";
+
+    public static final String LDU_TIME_OUT_ERR = "86";
+
+    public static final String LDU_WORD_COUNT_ERR = "88";
+
+    public static final String FILE_TIME_OUT_ERR = "8E";
+
+    public static final String NEW_FILE_WITH_PRE_INCOMPLETE = "95";
 }

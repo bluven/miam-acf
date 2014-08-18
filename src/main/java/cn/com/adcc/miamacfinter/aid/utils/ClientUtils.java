@@ -51,6 +51,10 @@ public class ClientUtils {
 
                 state.handleNCTS(NCTSBean.parseRaw(data, label));
 
+            } else if(data.startsWith(BUSYBean.TYPE)){
+
+                state.handleBUSY(BUSYBean.parseRaw(data, label));
+
             } else if(data.startsWith(SOTBean.TYPE)){
 
                 state.handleSOT(SOTBean.parseRaw(data, label));
@@ -62,6 +66,10 @@ public class ClientUtils {
             } else if(data.startsWith(EOTBean.TYPE_FINAL)){
 
                 state.handleEOT(EOTBean.newFinalEOT(data.substring(2), label));
+
+            } else if(data.startsWith(SYNBean.TYPE)){
+
+                state.handleSYN(SYNBean.parseRaw(data, label));
 
             } else if(data.startsWith(ACKBean.TYPE)){
 

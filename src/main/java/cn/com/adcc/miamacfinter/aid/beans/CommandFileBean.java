@@ -21,6 +21,10 @@ public class CommandFileBean {
 
     private Iterator<CommandLDUBean> lduIter;
 
+    public static boolean isValidFileSeqNum(int fileSeqNum){
+        return fileSeqNum > 0 && fileSeqNum < 255;
+    }
+
     public void appendLDUBean(CommandLDUBean lduBean){
         if(LDUBeans == null){
             this.LDUBeans = new ArrayList<CommandLDUBean>();
@@ -53,6 +57,22 @@ public class CommandFileBean {
         return fileContent.reverse().toString();
     }
 
+    /**
+     * 判断lduNum是否是下一个LUD或者重复LDU
+     * @param lduNum
+     * @return
+     */
+    public boolean isNextOrDup(int lduNum){
+
+        if(this.LDUBeans.isEmpty()){
+            return true;
+        }
+
+        CommandLDUBean ldu = this.LDUBeans.get(LDUBeans.size() - 1);
+
+        return ldu.getLDUNum() - lduNum == 1 || ldu.getLDUNum() == lduNum;
+    }
+
     public Integer getFileId() {
         return fileId;
     }
@@ -60,8 +80,6 @@ public class CommandFileBean {
     public void setFileId(Integer fileId) {
         this.fileId = fileId;
     }
-
-
 
     public boolean isFileSeqNumMatch(int fileNum_){
         return this.fileNum == fileNum_;

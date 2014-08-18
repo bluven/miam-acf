@@ -20,6 +20,8 @@ public interface IState {
 
     void handleNCTS(NCTSBean bean);
 
+    void handleBUSY(BUSYBean bean);
+
     void handleSOT(SOTBean bean);
 
     void handleALR(ALRBean bean);
@@ -28,13 +30,16 @@ public interface IState {
 
     void handleDataBean(DataBean data);
 
+    void handleEOT(EOTBean eotBean);
+
+    void handleSYN(SYNBean syn);
+
+    void handleACK(ACKBean ackBean);
+
     IContext getContext();
 
     void setContext(IContext context);
 
     void sendFile(CommandFileBean fileBean);
 
-    void handleEOT(EOTBean eotBean);
-
-    void handleACK(ACKBean ackBean);
 }

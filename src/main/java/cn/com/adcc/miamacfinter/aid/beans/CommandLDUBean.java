@@ -31,6 +31,20 @@ public class CommandLDUBean {
         return dataBeans.size() == (rtsBean.getWordCount() - 2);
     }
 
+    /**
+     * 是否完整LDU
+     *
+     * 完整LDU是RTS，SOT， EOT， databeans 完备的
+     * @return
+     */
+    public boolean isComplete(){
+        return rtsBean != null && sotBean != null && eotBean != null && isAllDataReceived();
+    }
+
+    public boolean isPartial(){
+        return !isComplete();
+    }
+
     public String getLduContent()
     {
         //定义临时变量

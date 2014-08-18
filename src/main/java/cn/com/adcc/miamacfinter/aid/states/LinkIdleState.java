@@ -2,12 +2,9 @@ package cn.com.adcc.miamacfinter.aid.states;
 
 import java.util.TimerTask;
 
-import cn.com.adcc.miamacfinter.ProtocolConstants;
+import cn.com.adcc.miamacfinter.aid.constants.ProtocolConstants;
+import cn.com.adcc.miamacfinter.aid.beans.*;
 import cn.com.adcc.miamacfinter.aid.clients.IContext;
-import cn.com.adcc.miamacfinter.aid.beans.CTSBean;
-import cn.com.adcc.miamacfinter.aid.beans.CommandFileBean;
-import cn.com.adcc.miamacfinter.aid.beans.CommandLDUBean;
-import cn.com.adcc.miamacfinter.aid.beans.RTSBean;
 
 /**
  * Created by bluven on 14-8-3.
@@ -17,6 +14,10 @@ public class LinkIdleState extends State {
     public void handleRTS(RTSBean rts){
 
         final IContext context = this.getContext();
+
+        // 收到RTS，取消T14
+        context.cancelTask("T14");
+        context.cancelTask("T9");
 
         CTSBean cts = new CTSBean();
 
@@ -32,12 +33,30 @@ public class LinkIdleState extends State {
         TimerTask t9 = new TimerTask() {
 
             public void run() {
+
+                // todo: 需要返回NAK
+                // 问题： T9是在CTS后SOT前生成，如果T9超时，是不知道File Seq Num的
+                // 解决： 假设SOT收到，需要为T9设置File Seq Num, 当T9超时，需要判断File Seq Num是否具备
+                // 具备则返回NAK， 不具备则只改变状态
+
+                CommandFileBean fileBean = context.getInputFileBean();
+
+                if(fileBean != null){
+
+                    int fileSeqNum = fileBean.getFileNum();
+
+                    if(CommandFileBean.isValidFileSeqNum(fileSeqNum)){
+                        NAKBean nak = new NAKBean();
+                        nak.setLabel(context.getCmuLabel());
+                        nak.setFileSeqNum(fileSeqNum);
+                        // LDU time out
+                        nak.setStatusCode(ProtocolConstants.LDU_TIME_OUT_ERR);
+                        context.transmit(nak);
+                    }
+                }
                 context.transferTo(new LinkIdleState());
             }
         };
-
-        // 收到RTS，取消T14
-        context.cancelTask("T14");
 
         context.schedule(t9, ProtocolConstants.T9_MAX);
 

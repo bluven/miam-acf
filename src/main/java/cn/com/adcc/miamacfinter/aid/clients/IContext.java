@@ -50,8 +50,10 @@ public interface IContext {
     void schedule(TimerTask timerTask, int delay);
 
     //  保存倒计时任务
+    // 对应于协议里的set动作
     void saveTask(String name, TimerTask task);
 
     // 取消任务并删除
+    // 对应于协议里的reset动作
     void cancelTask(String name);
 }

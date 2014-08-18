@@ -31,6 +31,10 @@ public class State implements IState {
 
     }
 
+    public void handleBUSY(BUSYBean busyBean){
+
+    }
+
     public void handleSOT(SOTBean bean) {
 
     }
@@ -49,6 +53,10 @@ public class State implements IState {
     }
 
     public void handleEOT(EOTBean eotBean) {
+
+    }
+
+    public void handleSYN(SYNBean syn) {
 
     }
 
