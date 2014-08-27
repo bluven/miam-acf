@@ -67,7 +67,9 @@ public class WaitCTSState extends State {
 
         context.transferTo(new LinkIdleState());
         // 放弃跟CMU抢夺发送权
-        // todo: 保存自己的文件，等待下次发送
+
+        // LDU.req to self
+        context.triggerFileSentEvent(this.fileBean.getFileId(), false);
     }
 
     private void delayAndResendRTS(int maxTry, int maxWait){
@@ -100,7 +102,7 @@ public class WaitCTSState extends State {
 
         TimerTask t5 = new TimerTask() {
 
-            private int n3Counter = 1;
+            private int n3Counter = 0;
 
             @Override
             public void run() {

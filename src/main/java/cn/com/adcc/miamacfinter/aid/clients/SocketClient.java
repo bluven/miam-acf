@@ -29,6 +29,7 @@ public class SocketClient extends Client {
         this.setTimer(new Timer());
         this.setState(new InitialState(this));
         this.setTasks(new HashMap());
+        this.setCounters(new HashMap());
     }
 
     public static Client newInstance(){

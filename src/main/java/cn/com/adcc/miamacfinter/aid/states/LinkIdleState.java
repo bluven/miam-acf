@@ -71,12 +71,15 @@ public class LinkIdleState extends State {
     }
 
     public static void sendFile(IContext context, CommandFileBean fileBean){
+        fileBean.resetLduIter();
+        sendLDU(context, fileBean, fileBean.nextLdu());
+    }
 
-        CommandLDUBean firstLDU = fileBean.nextLDU();
+    public static void sendLDU(IContext context, CommandFileBean fileBean, CommandLDUBean ldu){
 
-        context.transmit(firstLDU.getRtsBean());
+        context.transmit(ldu.getRtsBean());
 
-        WaitCTSState waitCTS = new WaitCTSState(fileBean, firstLDU);
+        WaitCTSState waitCTS = new WaitCTSState(fileBean, ldu);
 
         context.transferTo(waitCTS);
 

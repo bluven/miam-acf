@@ -17,6 +17,8 @@ public abstract class Client implements IContext, IClient {
 
     private Map<String, TimerTask> tasks;
 
+    private Map<String, Integer> counters;
+
     private IState state;
 
     private String host;
@@ -63,6 +65,7 @@ public abstract class Client implements IContext, IClient {
     }
 
     public void transferTo(IState state) {
+
         this.setState(state);
         state.setContext(this);
     }
@@ -80,6 +83,10 @@ public abstract class Client implements IContext, IClient {
         this.transmit(bean);
     }
 
+    public boolean isReceivingFile(){
+        return this.inputFileBean != null;
+    }
+
     public void sendFile(int fileId, String fileContent){
 
         CommandFileBean fileBean = BeanBuilder.build(fileId, fileContent, this.cmuLabel);
@@ -90,18 +97,26 @@ public abstract class Client implements IContext, IClient {
     }
 
     public void triggerFileSentEvent(int fileId, boolean result){
-        this.fileHandler.onSentResult(fileId, result);
+
+        if(this.fileHandler != null){
+            this.fileHandler.onSentResult(fileId, result);
+        }
     }
 
     public void triggerFileReceived(){
+        // todo: 放在线程里运行，防止阻塞
         this.triggerFileReceived(this.inputFileBean);
+
+        // receiving file complete, delete the file bean.
         this.inputFileBean = null;
     }
 
     public void triggerFileReceived(CommandFileBean fileBean){
+
         if(this.fileHandler != null){
             this.fileHandler.onReceived(fileBean.getFileContent());
         }
+
     }
 
     public void scheduleAtFixedRate(TimerTask timerTask, int delay, int interval) {
@@ -119,6 +134,21 @@ public abstract class Client implements IContext, IClient {
         if(task != null){
             task.cancel();
         }
+    }
+
+    public void incrementCounter(String name){
+
+        int num = this.counters.getOrDefault(name, 0);
+
+        this.counters.put(name, num + 1);
+    }
+
+    public boolean isCounterGreaterThan(String name, Integer num){
+        return this.counters.getOrDefault(name, 0) > num;
+    }
+
+    public void resetCounter(String name){
+        this.counters.remove(name);
     }
 
     public void schedule(TimerTask timerTask, int delay) {
@@ -195,5 +225,13 @@ public abstract class Client implements IContext, IClient {
 
     public void setTasks(Map<String, TimerTask> tasks) {
         this.tasks = tasks;
+    }
+
+    public Map<String, Integer> getCounters() {
+        return counters;
+    }
+
+    public void setCounters(Map<String, Integer> counters) {
+        this.counters = counters;
     }
 }

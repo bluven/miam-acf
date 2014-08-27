@@ -43,9 +43,6 @@ public class State implements IState {
     }
 
     public void handleALO(ALOBean bean) {
-
-        ALRBean alr = new ALRBean(context.getAidLabel(), 1);
-        context.transmit(alr);
     }
 
     public void handleDataBean(DataBean data) {
@@ -56,11 +53,15 @@ public class State implements IState {
 
     }
 
-    public void handleSYN(SYNBean syn) {
+    public void handleACK(ACKBean ackBean) {
 
     }
 
-    public void handleACK(ACKBean ackBean) {
+    public void handleNAK(NAKBean nakBean){
+
+    }
+
+    public void handleSYN(SYNBean syn) {
 
     }
 

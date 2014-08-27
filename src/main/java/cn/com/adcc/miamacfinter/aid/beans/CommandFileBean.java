@@ -33,7 +33,7 @@ public class CommandFileBean {
         this.LDUBeans.add(lduBean);
     }
 
-    public CommandLDUBean nextLDU(){
+    public CommandLDUBean nextLdu(){
 
         if(lduIter == null){
             lduIter = LDUBeans.iterator();
@@ -46,6 +46,10 @@ public class CommandFileBean {
         }
     }
 
+    public void resetLduIter() {
+        this.lduIter = null;
+    }
+
 	public String getFileContent() {
         //定义临时变量
         StringBuilder fileContent=new StringBuilder();
@@ -54,6 +58,7 @@ public class CommandFileBean {
         for(CommandLDUBean lduBean : this.LDUBeans) {
             fileContent.insert(0,lduBean.getLduContent());
         }
+
         return fileContent.reverse().toString();
     }
 
@@ -100,5 +105,6 @@ public class CommandFileBean {
     public void setFileNum(int fileNum) {
         this.fileNum = fileNum;
     }
+
 
 }

@@ -56,4 +56,10 @@ public interface IContext {
     // 取消任务并删除
     // 对应于协议里的reset动作
     void cancelTask(String name);
+
+    void incrementCounter(String name);
+
+    boolean isCounterGreaterThan(String name, Integer num);
+
+    void resetCounter(String name);
 }

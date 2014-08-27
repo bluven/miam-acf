@@ -52,7 +52,7 @@ public class WaitEOTState extends State {
 
         // todo: CRC validate
 
-        // todo: LDU Num validate
+        // todo: LDU Num validate, 这个功能在WaitSOT里实现
 
         if(!lduBean.isAllDataReceived()){
             NAKBean nak = new NAKBean();
@@ -80,6 +80,8 @@ public class WaitEOTState extends State {
         ack.setLduSeqNum(sotBean.getLduNum());
         context.transmit(ack);
 
+        context.transferTo(new LinkIdleState());
+
         if(eot.isFinalEOT()){
 
             context.getInputFileBean().appendLDUBean(lduBean);
@@ -90,9 +92,7 @@ public class WaitEOTState extends State {
             startT14(sotBean);
         }
 
-        super.context.transferTo(new LinkIdleState());
-
-        super.context.cancelTask("T9");
+        context.cancelTask("T9");
     }
 
     @Override

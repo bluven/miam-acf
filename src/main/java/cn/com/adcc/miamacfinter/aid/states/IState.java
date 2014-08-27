@@ -32,9 +32,11 @@ public interface IState {
 
     void handleEOT(EOTBean eotBean);
 
+    void handleACK(ACKBean ackBean);
+
     void handleSYN(SYNBean syn);
 
-    void handleACK(ACKBean ackBean);
+    void handleNAK(NAKBean nak);
 
     IContext getContext();
 

@@ -15,6 +15,8 @@ public interface IClient {
 
     void sendFile(int fileId, String fileContent);
 
+    boolean isReceivingFile();
+
     String getAidLabel();
 
     void setAidLabel(String label);

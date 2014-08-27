@@ -2,6 +2,7 @@ package cn.com.adcc.miamacfinter.aid.beans;
 
 import cn.com.adcc.miamacfinter.aid.utils.CRC_Calculate;
 import cn.com.adcc.miamacfinter.aid.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
 
 public class BeanBuilder {
 
@@ -146,7 +147,9 @@ public class BeanBuilder {
         {
             crc=crc.substring(4,8);
         }
-        return crc;
+
+        return StringUtils.leftPad(crc,4,'0');
+
     }
 
 
