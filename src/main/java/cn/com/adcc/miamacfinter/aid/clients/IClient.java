@@ -11,6 +11,8 @@ public interface IClient {
 
     void connect(String host, int port, String aidLabel, String cmuLabel);
 
+    void close();
+
     void registerFileHandler(IFileHandler handler);
 
     void sendFile(int fileId, String fileContent);

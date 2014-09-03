@@ -40,11 +40,9 @@ public class ConcurrentClient extends SocketClient {
     }
 
     public void close() {
-
         try {
             super.close();
             this.sendThread.join(1000);
-
         } catch (Exception e) {
             throw new BaseException(e);
         }

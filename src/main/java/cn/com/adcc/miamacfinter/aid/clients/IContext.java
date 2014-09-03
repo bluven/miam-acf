@@ -41,6 +41,8 @@ public interface IContext {
 
     void triggerFileReceived();
 
+    CommandFileBean discardInputFile();
+
     void triggerFileReceived(CommandFileBean fileBean);
 
     void triggerFileSentEvent(int fileId, boolean result);

@@ -3,10 +3,12 @@ package cn.com.adcc.miamacfinter.aid.clients;
 import cn.com.adcc.miamacfinter.aid.beans.*;
 import cn.com.adcc.miamacfinter.aid.handlers.IFileHandler;
 import cn.com.adcc.miamacfinter.aid.states.IState;
+import cn.com.adcc.miamacfinter.aid.states.InitialState;
 
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by bluven on 14-8-6.
@@ -32,13 +34,29 @@ public abstract class Client implements IContext, IClient {
     // 待接收文件
     private CommandFileBean inputFileBean;
 
-    private CommandLDUBean inputLduBean;
-
     private IFileHandler fileHandler;
 
-    public abstract void close();
+    public void close() {
 
-    public void connect(String aidLabel){
+        this.tasks = null;
+        this.counters = null;
+        this.discardInputFile();
+        this.timer.cancel();
+        this.timer = null;
+
+        this.state = new InitialState(this);
+    }
+
+    public void beforeConnect(){
+
+        this.tasks = new ConcurrentHashMap();
+
+        this.counters = new ConcurrentHashMap();
+
+        this.timer = new Timer();
+    }
+
+    public void connect(String aidLabel) {
         this.connect("192.168.4.253", 8766, aidLabel, "304");
     }
 
@@ -96,6 +114,15 @@ public abstract class Client implements IContext, IClient {
         this.state.sendFile(fileBean);
     }
 
+    public CommandFileBean discardInputFile(){
+
+        CommandFileBean fileBean = this.getInputFileBean();
+
+        this.setInputFileBean(null);
+
+        return fileBean;
+    }
+
     public void triggerFileSentEvent(int fileId, boolean result){
 
         if(this.fileHandler != null){
@@ -111,12 +138,19 @@ public abstract class Client implements IContext, IClient {
         this.inputFileBean = null;
     }
 
-    public void triggerFileReceived(CommandFileBean fileBean){
+    public void triggerFileReceived(final CommandFileBean fileBean){
+
+        final Client client = this;
 
         if(this.fileHandler != null){
-            this.fileHandler.onReceived(fileBean.getFileContent());
-        }
+            new Thread(){
 
+                public void run(){
+                    client.fileHandler.onReceived(fileBean.getFileContent());
+                }
+
+            }.start();
+        }
     }
 
     public void scheduleAtFixedRate(TimerTask timerTask, int delay, int interval) {
@@ -145,6 +179,14 @@ public abstract class Client implements IContext, IClient {
 
     public boolean isCounterGreaterThan(String name, Integer num){
         return this.counters.getOrDefault(name, 0) > num;
+    }
+
+    public void resetTasks(){
+        this.tasks = new ConcurrentHashMap();
+    }
+
+    public void resetCounters(){
+        this.counters = new ConcurrentHashMap();
     }
 
     public void resetCounter(String name){
@@ -203,35 +245,4 @@ public abstract class Client implements IContext, IClient {
         this.inputFileBean = fileBean;
     }
 
-    public CommandLDUBean getInputLduBean() {
-        return inputLduBean;
-    }
-
-    public void setInputLduBean(CommandLDUBean inputLduBean) {
-        this.inputLduBean = inputLduBean;
-    }
-
-    public Timer getTimer() {
-        return timer;
-    }
-
-    public void setTimer(Timer timer) {
-        this.timer = timer;
-    }
-
-    public Map<String, TimerTask> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(Map<String, TimerTask> tasks) {
-        this.tasks = tasks;
-    }
-
-    public Map<String, Integer> getCounters() {
-        return counters;
-    }
-
-    public void setCounters(Map<String, Integer> counters) {
-        this.counters = counters;
-    }
 }

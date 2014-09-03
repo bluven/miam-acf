@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by bluven on 14-8-7.
@@ -25,11 +26,7 @@ public class SocketClient extends Client {
     private static SocketClient singleton;
 
     protected SocketClient(){
-
-        this.setTimer(new Timer());
         this.setState(new InitialState(this));
-        this.setTasks(new HashMap());
-        this.setCounters(new HashMap());
     }
 
     public static Client newInstance(){
@@ -41,13 +38,18 @@ public class SocketClient extends Client {
         return SocketClient.singleton;
     }
 
-
     @Override
     public void close() {
         try {
-            this.socket.close();
+            super.close();
+
             this.running = false;
+
             this.readThread.join(1000);
+            this.readThread = null;
+
+            this.socket.close();
+            this.socket = null;
 
         } catch (Exception e) {
             throw new BaseException(e);
@@ -55,6 +57,8 @@ public class SocketClient extends Client {
     }
 
     public void connect(String host, int port, String aidLabel, String cmuLabel) {
+
+        super.beforeConnect();
 
         this.doConnect(host, port, aidLabel, cmuLabel);
 
@@ -86,6 +90,8 @@ public class SocketClient extends Client {
         } catch (Exception e){
             throw new BaseException(e);
         }
+
+        this.running = true;
     }
 
     public void startRead(){
@@ -97,12 +103,12 @@ public class SocketClient extends Client {
                 try {
                     BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-                    while(true){
+                    while(running){
                         ClientUtils.handleInputData(SocketClient.this.getState(), input.readLine());
                     }
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+
                 }
             }
         });

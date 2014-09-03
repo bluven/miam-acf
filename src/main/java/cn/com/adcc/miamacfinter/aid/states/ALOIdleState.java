@@ -45,8 +45,6 @@ public class ALOIdleState extends State {
             this.t12.cancel();
         }
 
-        System.out.println("ALR");
-
         context.transferTo(new LinkIdleState());
     }
 

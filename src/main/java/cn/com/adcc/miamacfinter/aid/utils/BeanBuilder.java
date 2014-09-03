@@ -53,8 +53,6 @@ public class BeanBuilder {
         catch (Exception ex)
         {
             String s= ex.getMessage();
-
-            System.out.print(s);
         }
         finally {
             return  fileBean;
