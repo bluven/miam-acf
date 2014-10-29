@@ -75,7 +75,8 @@ public class CommandFileBean {
 
         CommandLDUBean ldu = this.LDUBeans.get(LDUBeans.size() - 1);
 
-        return ldu.getLDUNum() - lduNum == 1 || ldu.getLDUNum() == lduNum;
+        return Math.abs(ldu.getLDUNum() - lduNum) == 1 || ldu.getLDUNum() == lduNum;
+
     }
 
     public Integer getFileId() {

@@ -97,7 +97,7 @@ public class WaitEOTState extends State {
 
     @Override
     public void handleSYN(SYNBean syn){
-        super.context.setInputFileBean(null);
+        super.context.discardInputFile();
         super.context.cancelTask("T14");
         super.context.transferTo(new LinkIdleState());
     }
@@ -117,7 +117,7 @@ public class WaitEOTState extends State {
 
                 this.cancel();
 
-                context.setInputFileBean(null);
+                context.discardInputFile();
 
                 // 发送SYN告知source 文件超时
                 context.transmit(

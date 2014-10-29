@@ -123,6 +123,8 @@ public class BeanBuilder {
             // short crc = CRC_Calculate.CRC429();
             String CRC = getMsgCrc(Msg);
 
+            CRC=StringUtils.leftPad(CRC,4,'0');
+
             lduBean.setEotBean(new EOTBean(eotType, CRC,label));
 
            // fileBean.LDUBeans.add(LDUBean);

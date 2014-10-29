@@ -99,7 +99,7 @@ public class WaitSOTState extends State {
 
         context.transmit(syn);
 
-        context.setInputFileBean(null);
+        context.discardInputFile();
 
         context.transferTo(new LinkIdleState());
     }
