@@ -9,69 +9,46 @@ public class BeanBuilder {
     public static CommandFileBean build(int fileNum, String msg, String cmuLabel){
         return build('G', 'W', '1',  cmuLabel, msg, fileNum);
     }
+
     //构建Msg的CommandFileBean
-    public static CommandFileBean build(char dst, char purpose, char origin, String label,
-                                 String Msg, int fileNum) {
+    public static CommandFileBean build(char dst, char purpose, char origin,
+                                         String label, String msg, int fileNum) {
+
+        final int WORD_NUM_LIMIT = 632;
+
         //定义变量
-        CommandFileBean fileBean=new CommandFileBean();
-        try
-        {
-            Msg = new StringBuilder().append(origin).append(purpose).append(dst).append((char)0).append((char)0).append(Msg).toString();
-            
-            //判定Msg长度,
-            if (Msg.length()>632)
-            {
-                //进行报文拆分
-                String firstLDUMsg = Msg.substring(0,632);
+        CommandFileBean fileBean = new CommandFileBean();
 
-                CommandLDUBean firstlduBean = GetLDUBeans(dst, purpose, origin, label, firstLDUMsg,fileNum,0, EOTBean.EOTType.notFinal);
+        msg = new StringBuilder().append(origin).append(purpose).append(dst).append((char)0).append((char)0).append(msg).toString();
 
-                fileBean.appendLDUBean(firstlduBean);
+        //判定Msg长度,
 
-                String endLDUMsg=Msg.substring(632,Msg.length());
-                int endLDUCount = (int)(endLDUMsg.length()/632);
-                double endLDUMod=endLDUMsg.length()%632;
+        // 一个LDU最多只能有255个word，其中还必须包含SOT及EOT，这样最多只能有253个word用来传输，一个full word只能传输2.5个字节，253 * 2.5 = 632.5
 
-                for(int i=0;i<endLDUCount;i++)
-                {
-                    String ldu = endLDUMsg.substring(i*632,(i+1)*632);
+        int lduNum = Math.floorDiv(msg.length(), WORD_NUM_LIMIT) + 1;
 
-                    CommandLDUBean lastlduBean=null;
-                    if ((i== (endLDUCount-1))&(endLDUMod==0))
-                    {
-                        lastlduBean = GetLDUBeans(dst, purpose, origin, label, ldu, fileNum, i+1, EOTBean.EOTType.Final);
-                    }
-                    else
-                    {
-                        lastlduBean = GetLDUBeans(dst, purpose, origin, label, ldu, fileNum, i+1, EOTBean.EOTType.notFinal);
-                    }
+        for(int i=0; i < lduNum; i++) {
 
-                    fileBean.appendLDUBean(lastlduBean);
-                }
-                if (endLDUMod!=0)
-                {
-                    String modMsg=endLDUMsg.substring(endLDUCount*632, endLDUCount*632+(int)endLDUMod);
-                    CommandLDUBean modlduBean = GetLDUBeans(dst, purpose, origin, label, modMsg, fileNum, endLDUCount, EOTBean.EOTType.Final);
-                    fileBean.appendLDUBean(modlduBean);
-                }
-            }
-            else
-            {
-                CommandLDUBean lduBean =GetLDUBeans(dst, purpose, origin, label, Msg,fileNum,0, EOTBean.EOTType.Final);
-                fileBean.appendLDUBean(lduBean);
+            String  partialMsg;
+
+            EOTBean.EOTType eotType ;
+
+            if(i == lduNum -1){
+                partialMsg = msg.substring(i*632);
+                eotType = EOTBean.EOTType.Final;
+            } else {
+                eotType = EOTBean.EOTType.notFinal;
+                partialMsg = msg.substring(i*WORD_NUM_LIMIT, (i+1) * WORD_NUM_LIMIT);
             }
 
-            return fileBean;
-        }
-        catch (Exception ex)
-        {
-            String s= ex.getMessage();
+            CommandLDUBean lastlduBean = null;
 
-            System.out.print(s);
+            lastlduBean = GetLDUBeans(dst, purpose, origin, label, partialMsg, fileNum, i, eotType);
+
+            fileBean.appendLDUBean(lastlduBean);
         }
-        finally {
-            return  fileBean;
-        }
+
+        return fileBean;
     }
 
     public static CommandLDUBean GetLDUBeans(char dst, char purpose, char origin, String label,
@@ -80,6 +57,9 @@ public class BeanBuilder {
             CommandLDUBean lduBean=new CommandLDUBean();
 
             //计算WordCount
+
+            // msg内容是符合ISO-5字符集的，不会出现双字节字符，每个429word只能传输2.5个字节, 所以wordCount=msg.length / 2.5
+
             double mod = (2*Msg.length())%5;
             int wordCount = (int)(Msg.length()/2.5);
 
@@ -90,6 +70,7 @@ public class BeanBuilder {
             for(char c:dataChars)
             {
                 String ch= Integer.toHexString(c).toUpperCase();
+
                 if (ch.length()==1)
                 {
                     data.insert(0,ch);
