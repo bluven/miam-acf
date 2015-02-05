@@ -82,12 +82,10 @@ public class WaitEOTState extends State {
 
         context.transferTo(new LinkIdleState());
 
+        context.getInputFileBean().appendLDUBean(lduBean);
+
         if(eot.isFinalEOT()){
-
-            context.getInputFileBean().appendLDUBean(lduBean);
-
             context.triggerFileReceived();
-
         } else {
             startT14(sotBean);
         }
