@@ -1,4 +1,6 @@
+
 package cn.com.adcc.miamacfinter.aid.beans;
+
 
 /**
  * Created by Daniel on 14-8-2.
